@@ -1,0 +1,67 @@
+YUV PSNR MEASUREMENT TOOL - yuvpsnr v1.0 - November 16, 2016
+
+Author: Ahmed Badr (ahmed.atef.younes@gmail.com)
+Copyright(c) 	Ahmed Badr
+All rights reserved.
+
+---------------------------
+ INTRODUCTION
+---------------------------
+
+This software provides an implementation of computing the Peak-Signal-to-Noise Ratio (PSNR) scores between two YUV video files for all three planes, Y, U and V, as well as the combined score for every frame. The total (average) PSNR for the whole sequence is also computed. All scores are written to an output .txt or .csv file.
+
+---------------------------
+ COMPILATION
+---------------------------
+
+This software can be compiled on:
+- Windows platform: cl /EHsc main.cpp /Feyuvpsnr
+- Linux platform:	g++ main.cpp -o yuvpsnr.o
+
+---------------------------
+ USAGE
+---------------------------
+
+This software can run on:
+- Windows platform: yuvpsnr.exe ref.yuv test.yuv width height [ChromaFormat] [ResultsFile] [Print]
+- Linux platform:	./yuvpsnr.o ref.yuv test.yuv width height [ChromaFormat] [ResultsFile] [Print]
+	ChromaFormat:
+        yuv420p
+        yuv422p
+        yuv444p
+	ResultsFile: specifies the output filename
+        filename.txt
+        filename.csv
+        filename
+	Print: is an optional argument which specifies whether to print frame-by-frame scores
+        0 prints final scores only
+        1 prints frame-by-frame scores too
+        default = 0
+
+Example:
+- Windows platform:	
+	yuvpsnr.exe Videos/Ref_768x432_yuv420p.yuv Videos/Test_768x432_yuv420p.yuv 768 432 yuv420p psnr.txt 1
+- Linux platform:	
+	./yuvpsnr.o Videos/Ref_768x432_yuv420p.yuv Videos/Test_768x432_yuv420p.yuv 768 432 yuv420p psnr.txt 1
+
+will create the output file "psnr.txt" with psnr scores for all planes and frames as well as the aggregate scores
+
+---------------------------
+ Video Sequences
+---------------------------
+The video files in /Videos are mpg files. To convert to yuv, use the following ffmpeg command:
+	ffmpeg -i input.mpg -c:v rawvideo -pix_fmt [ChromaFormat] output.yuv -vsync 0
+ChromaFormat:
+	yuv420p
+	yuv422p
+	yuv444p
+
+The -vsync 0 arguments is needed to prevent duplicates to make sure reference and test files contain the same number of frames (for adequate PSNR comparison)
+	
+Example:
+	ffmpeg -i Ref_768x432_yuv420p.mpg -c:v rawvideo -pix_fmt yuv420p Ref_768x432_yuv420p.yuv -vsync 0
+	ffmpeg -i Test_768x432_yuv420p.mpg -c:v rawvideo -pix_fmt yuv420p Test_768x432_yuv420p.yuv -vsync 0
+	ffmpeg -i Ref_768x432_yuv422p.mpg -c:v rawvideo -pix_fmt yuv422p Ref_768x432_yuv422p.yuv -vsync 0
+	ffmpeg -i Test_768x432_yuv422p.mpg -c:v rawvideo -pix_fmt yuv422p Test_768x432_yuv422p.yuv -vsync 0
+	ffmpeg -i Ref_768x432_yuv444p.mpg -c:v rawvideo -pix_fmt yuv444p Ref_768x432_yuv444p.yuv -vsync 0
+	ffmpeg -i Test_768x432_yuv444p.mpg -c:v rawvideo -pix_fmt yuv444p Test_768x432_yuv444p.yuv -vsync 0
